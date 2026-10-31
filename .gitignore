@@ -73,3 +73,10 @@ yarn-error.log
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
+
+# Server uploads
+server/uploads/
+
+# Personal learning & step-by-step notes
+MY_PRACTICE_GUIDE.md
+
