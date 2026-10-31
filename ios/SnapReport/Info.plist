@@ -36,6 +36,10 @@
 	</dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string></string>
+	<key>NSCameraUsageDescription</key>
+	<string>SnapReport needs camera access to take report inspection photos.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>SnapReport needs photo gallery access to select report inspection photos.</string>
 	<key>RCTNewArchEnabled</key>
 	<true/>
 	<key>UIApplicationSceneManifest</key>
