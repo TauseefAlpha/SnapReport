@@ -20,6 +20,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { AlertTriangleIcon, CheckCircleIcon, CloudIcon } from '../components/Icons';
 import { apiService } from '../services/api';
 import { ServerReport } from '../types/report';
 
@@ -58,7 +59,8 @@ export const ReviewScreen: React.FC = () => {
       <View style={styles.card}>
         <View style={styles.cardHeader}>
           <View style={styles.serverVerifiedTag}>
-            <Text style={styles.serverVerifiedText}>✓ Server Verified</Text>
+            <CheckCircleIcon size={12} color="#137333" strokeWidth={2.5} />
+            <Text style={styles.serverVerifiedText}>Server Verified</Text>
           </View>
           <Text style={styles.timeText}>
             Received: {new Date(item.receivedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
@@ -107,8 +109,8 @@ export const ReviewScreen: React.FC = () => {
         </View>
       ) : error ? (
         <View style={styles.centerContainer}>
-          <Text style={styles.errorIcon}>⚠️</Text>
-          <Text style={styles.errorTitle}>Could Not Reach Server</Text>
+          <AlertTriangleIcon size={40} color="#D93025" strokeWidth={1.8} />
+          <Text style={[styles.errorTitle, { marginTop: 12 }]}>Could Not Reach Server</Text>
           <Text style={styles.errorMessage}>{error}</Text>
           <TouchableOpacity style={styles.retryBtn} onPress={fetchReports}>
             <Text style={styles.retryBtnText}>Retry Connection</Text>
@@ -125,7 +127,8 @@ export const ReviewScreen: React.FC = () => {
           }
           ListEmptyComponent={
             <View style={styles.centerContainer}>
-              <Text style={styles.emptyTitle}>No Reports on Server Yet</Text>
+              <CloudIcon size={40} color="#BDC1C6" strokeWidth={1.5} />
+              <Text style={[styles.emptyTitle, { marginTop: 12 }]}>No Reports on Server Yet</Text>
               <Text style={styles.emptySubtitle}>
                 Once queued reports are delivered over the network, they will appear here.
               </Text>
@@ -177,6 +180,9 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   serverVerifiedTag: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
     backgroundColor: '#E6F4EA',
     paddingHorizontal: 8,
     paddingVertical: 3,

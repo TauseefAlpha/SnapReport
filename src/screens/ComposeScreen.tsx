@@ -13,6 +13,8 @@ import {
   Alert,
   Image,
   KeyboardAvoidingView,
+  Linking,
+  PermissionsAndroid,
   Platform,
   ScrollView,
   StyleSheet,
@@ -27,6 +29,7 @@ import {
   launchCamera,
   launchImageLibrary,
 } from 'react-native-image-picker';
+import { CameraIcon, CloseIcon, ImageIcon } from '../components/Icons';
 import { generateUUID } from '../services/storage';
 import { queueManager } from '../services/queueManager';
 import { LocalImage, Report } from '../types/report';
@@ -41,6 +44,59 @@ export const ComposeScreen: React.FC<Props> = ({ onReportSubmitted }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   /**
+   * Android Runtime Permission for Camera
+   */
+  const checkAndRequestCameraPermission = async (): Promise<boolean> => {
+    if (Platform.OS !== 'android') return true;
+
+    try {
+      const alreadyGranted = await PermissionsAndroid.check(
+        PermissionsAndroid.PERMISSIONS.CAMERA
+      );
+      if (alreadyGranted) return true;
+
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.CAMERA,
+        {
+          title: 'Camera Permission Needed',
+          message: 'SnapReport needs access to your camera to take inspection photos.',
+          buttonNeutral: 'Ask Later',
+          buttonNegative: 'Cancel',
+          buttonPositive: 'Grant Permission',
+        }
+      );
+
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        return true;
+      }
+
+      if (granted === PermissionsAndroid.RESULTS.NEVER_ASK_AGAIN) {
+        Alert.alert(
+          'Permission Blocked',
+          'Camera permission is disabled. Please open device Settings to allow camera access for SnapReport.',
+          [
+            { text: 'Cancel', style: 'cancel' },
+            { text: 'Open Settings', onPress: () => Linking.openSettings() },
+          ]
+        );
+      } else {
+        Alert.alert(
+          'Camera Permission Required',
+          'SnapReport cannot capture photos without camera permission. You can enable it in device Settings.',
+          [
+            { text: 'Cancel', style: 'cancel' },
+            { text: 'Open Settings', onPress: () => Linking.openSettings() },
+          ]
+        );
+      }
+      return false;
+    } catch (err) {
+      console.warn('Camera permission error:', err);
+      return false;
+    }
+  };
+
+  /**
    * Camera se photo lena
    */
   const handleTakePhoto = async () => {
@@ -48,6 +104,10 @@ export const ComposeScreen: React.FC<Props> = ({ onReportSubmitted }) => {
       Alert.alert('Limit Reached', 'You can attach a maximum of 5 photos per report.');
       return;
     }
+
+    // Android runtime permission check
+    const hasPermission = await checkAndRequestCameraPermission();
+    if (!hasPermission) return;
 
     const options: CameraOptions = {
       mediaType: 'photo',
@@ -231,7 +291,8 @@ export const ComposeScreen: React.FC<Props> = ({ onReportSubmitted }) => {
               onPress={handleTakePhoto}
               disabled={selectedImages.length >= 5}
             >
-              <Text style={styles.actionBtnText}>📷 Take Photo</Text>
+              <CameraIcon size={18} color="#1A73E8" strokeWidth={2} />
+              <Text style={styles.actionBtnText}>Take Photo</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
@@ -239,7 +300,8 @@ export const ComposeScreen: React.FC<Props> = ({ onReportSubmitted }) => {
               onPress={handlePickFromGallery}
               disabled={selectedImages.length >= 5}
             >
-              <Text style={styles.actionBtnText}>🖼️ Choose Gallery</Text>
+              <ImageIcon size={18} color="#1A73E8" strokeWidth={2} />
+              <Text style={styles.actionBtnText}>Choose Gallery</Text>
             </TouchableOpacity>
           </View>
 
@@ -253,7 +315,7 @@ export const ComposeScreen: React.FC<Props> = ({ onReportSubmitted }) => {
                     style={styles.removeBadge}
                     onPress={() => handleRemovePhoto(img.id)}
                   >
-                    <Text style={styles.removeText}>✕</Text>
+                    <CloseIcon size={12} color="#FFFFFF" strokeWidth={2.8} />
                   </TouchableOpacity>
                   <Text style={styles.thumbIndex}>#{idx + 1}</Text>
                   {img.fileSizeBytes > 0 && (
@@ -345,6 +407,9 @@ const styles = StyleSheet.create({
   },
   actionBtn: {
     flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: 7,
     backgroundColor: '#FFFFFF',
     borderWidth: 1.5,
     borderColor: '#1A73E8',
@@ -431,3 +496,4 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
 });
+

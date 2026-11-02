@@ -4,7 +4,7 @@
  * Features:
  * 1. Initializes the QueueManager background listener on app launch.
  * 2. Displays live network status banner (Offline / Online).
- * 3. Native tab navigation:
+ * 3. Native tab navigation with Lucide Vector Icons & safe area insets:
  *    - Compose: Create reports with 1-5 images & description
  *    - Outbox: Real-time local queue feed & delivery status
  *    - Server Review: Reports fetched directly from backend
@@ -13,14 +13,14 @@
 
 import React, { useEffect, useState } from 'react';
 import {
-  SafeAreaView,
   StatusBar,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from 'react-native';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
+import { CloudIcon, InboxIcon, PenSquareIcon, SettingsIcon } from './src/components/Icons';
 import { NetworkBanner } from './src/components/NetworkBanner';
 import { ComposeScreen } from './src/screens/ComposeScreen';
 import { DevSettingsScreen } from './src/screens/DevSettingsScreen';
@@ -32,6 +32,7 @@ import { Report } from './src/types/report';
 type Tab = 'compose' | 'queue' | 'review' | 'settings';
 
 function MainApp() {
+  const insets = useSafeAreaInsets();
   const [activeTab, setActiveTab] = useState<Tab>('compose');
   const [pendingCount, setPendingCount] = useState<number>(0);
 
@@ -51,7 +52,7 @@ function MainApp() {
   }, []);
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <View style={[styles.rootContainer, { paddingTop: insets.top }]}>
       <StatusBar barStyle="dark-content" />
 
       {/* Top Header */}
@@ -75,17 +76,27 @@ function MainApp() {
         {activeTab === 'settings' && <DevSettingsScreen />}
       </View>
 
-      {/* Bottom Navigation Bar */}
-      <View style={styles.tabBar}>
+      {/* Bottom Navigation Bar with Safe Bottom Inset */}
+      <View
+        style={[
+          styles.tabBar,
+          {
+            paddingBottom: Math.max(insets.bottom, 10),
+            height: 56 + Math.max(insets.bottom, 10),
+          },
+        ]}
+      >
         {/* Tab 1: Compose */}
         <TouchableOpacity
           style={styles.tabItem}
           onPress={() => setActiveTab('compose')}
           activeOpacity={0.7}
         >
-          <Text style={[styles.tabIcon, activeTab === 'compose' && styles.tabActiveText]}>
-            ✍️
-          </Text>
+          <PenSquareIcon
+            size={20}
+            color={activeTab === 'compose' ? '#1A73E8' : '#80868B'}
+            strokeWidth={activeTab === 'compose' ? 2.4 : 1.8}
+          />
           <Text style={[styles.tabLabel, activeTab === 'compose' && styles.tabActiveText]}>
             Compose
           </Text>
@@ -98,9 +109,11 @@ function MainApp() {
           activeOpacity={0.7}
         >
           <View style={styles.iconWithBadge}>
-            <Text style={[styles.tabIcon, activeTab === 'queue' && styles.tabActiveText]}>
-              📦
-            </Text>
+            <InboxIcon
+              size={20}
+              color={activeTab === 'queue' ? '#1A73E8' : '#80868B'}
+              strokeWidth={activeTab === 'queue' ? 2.4 : 1.8}
+            />
             {pendingCount > 0 && (
               <View style={styles.badge}>
                 <Text style={styles.badgeText}>{pendingCount}</Text>
@@ -118,9 +131,11 @@ function MainApp() {
           onPress={() => setActiveTab('review')}
           activeOpacity={0.7}
         >
-          <Text style={[styles.tabIcon, activeTab === 'review' && styles.tabActiveText]}>
-            ☁️
-          </Text>
+          <CloudIcon
+            size={20}
+            color={activeTab === 'review' ? '#1A73E8' : '#80868B'}
+            strokeWidth={activeTab === 'review' ? 2.4 : 1.8}
+          />
           <Text style={[styles.tabLabel, activeTab === 'review' && styles.tabActiveText]}>
             Server
           </Text>
@@ -132,15 +147,17 @@ function MainApp() {
           onPress={() => setActiveTab('settings')}
           activeOpacity={0.7}
         >
-          <Text style={[styles.tabIcon, activeTab === 'settings' && styles.tabActiveText]}>
-            ⚙️
-          </Text>
+          <SettingsIcon
+            size={20}
+            color={activeTab === 'settings' ? '#1A73E8' : '#80868B'}
+            strokeWidth={activeTab === 'settings' ? 2.4 : 1.8}
+          />
           <Text style={[styles.tabLabel, activeTab === 'settings' && styles.tabActiveText]}>
             Reset / Dev
           </Text>
         </TouchableOpacity>
       </View>
-    </SafeAreaView>
+    </View>
   );
 }
 
@@ -153,7 +170,7 @@ export default function App() {
 }
 
 const styles = StyleSheet.create({
-  safeArea: {
+  rootContainer: {
     flex: 1,
     backgroundColor: '#FFFFFF',
   },
@@ -162,21 +179,22 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 16,
-    paddingVertical: 10,
+    paddingVertical: 12,
     backgroundColor: '#FFFFFF',
     borderBottomWidth: 1,
     borderBottomColor: '#E8EAED',
   },
   appName: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: '800',
     color: '#16212C',
     letterSpacing: -0.3,
   },
   appTagline: {
-    fontSize: 11,
+    fontSize: 11.5,
     color: '#5F6368',
     fontWeight: '500',
+    marginTop: 1,
   },
   screenContainer: {
     flex: 1,
@@ -184,26 +202,23 @@ const styles = StyleSheet.create({
   },
   tabBar: {
     flexDirection: 'row',
-    height: 60,
     backgroundColor: '#FFFFFF',
     borderTopWidth: 1,
     borderTopColor: '#E8EAED',
     alignItems: 'center',
     justifyContent: 'space-around',
+    paddingTop: 8,
   },
   tabItem: {
     alignItems: 'center',
     justifyContent: 'center',
     flex: 1,
   },
-  tabIcon: {
-    fontSize: 18,
-    marginBottom: 2,
-  },
   tabLabel: {
     fontSize: 11,
     color: '#80868B',
     fontWeight: '500',
+    marginTop: 3,
   },
   tabActiveText: {
     color: '#1A73E8',
@@ -214,19 +229,19 @@ const styles = StyleSheet.create({
   },
   badge: {
     position: 'absolute',
-    top: -4,
+    top: -5,
     right: -10,
     backgroundColor: '#D93025',
     borderRadius: 9,
-    minWidth: 18,
-    height: 18,
+    minWidth: 17,
+    height: 17,
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 3,
   },
   badgeText: {
     color: '#FFFFFF',
-    fontSize: 10,
+    fontSize: 9.5,
     fontWeight: '700',
   },
 });

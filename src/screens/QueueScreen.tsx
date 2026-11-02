@@ -18,6 +18,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { InboxIcon, RefreshIcon } from '../components/Icons';
 import { StatusBadge } from '../components/StatusBadge';
 import { queueManager } from '../services/queueManager';
 import { Report } from '../types/report';
@@ -130,6 +131,7 @@ export const QueueScreen: React.FC = () => {
       <View style={styles.syncHeader}>
         <Text style={styles.outboxTitle}>Local Device Outbox</Text>
         <TouchableOpacity style={styles.syncButton} onPress={handleManualSync}>
+          <RefreshIcon size={13} color="#1A73E8" strokeWidth={2.2} />
           <Text style={styles.syncButtonText}>Sync Now</Text>
         </TouchableOpacity>
       </View>
@@ -145,7 +147,8 @@ export const QueueScreen: React.FC = () => {
         }
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
-            <Text style={styles.emptyTitle}>Outbox is Empty</Text>
+            <InboxIcon size={40} color="#BDC1C6" strokeWidth={1.5} />
+            <Text style={[styles.emptyTitle, { marginTop: 12 }]}>Outbox is Empty</Text>
             <Text style={styles.emptySubtitle}>
               New reports created on the Compose screen will appear here.
             </Text>
@@ -196,9 +199,12 @@ const styles = StyleSheet.create({
     color: '#202124',
   },
   syncButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5,
     backgroundColor: '#E8F0FE',
     paddingHorizontal: 12,
-    paddingVertical: 5,
+    paddingVertical: 6,
     borderRadius: 6,
   },
   syncButtonText: {
@@ -295,3 +301,4 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 });
+

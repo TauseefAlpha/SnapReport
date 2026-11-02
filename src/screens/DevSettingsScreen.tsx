@@ -18,6 +18,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { AlertTriangleIcon, CheckIcon, ClockIcon, UnplugIcon } from '../components/Icons';
 import { apiService } from '../services/api';
 import { clearAllLocalReports } from '../services/storage';
 
@@ -104,7 +105,7 @@ export const DevSettingsScreen: React.FC = () => {
             await clearAllLocalReports();
             try {
               await apiService.resetServer();
-            } catch (_) {}
+            } catch (_) { }
             Alert.alert('Full Reset Complete', 'Both device and server have been reset.');
           },
         },
@@ -136,8 +137,9 @@ export const DevSettingsScreen: React.FC = () => {
           onPress={() => handleSetSimMode('none')}
           disabled={isUpdating}
         >
+          <CheckIcon size={16} color={activeSimMode === 'none' ? '#1A73E8' : '#5F6368'} strokeWidth={2.4} />
           <Text style={[styles.simBtnText, activeSimMode === 'none' && styles.simBtnTextActive]}>
-            ✓ Normal Mode (No simulated failure)
+            Normal Mode (No simulated failure)
           </Text>
         </TouchableOpacity>
 
@@ -146,8 +148,9 @@ export const DevSettingsScreen: React.FC = () => {
           onPress={() => handleSetSimMode('slow_2g')}
           disabled={isUpdating}
         >
+          <ClockIcon size={16} color={activeSimMode === 'slow_2g' ? '#1A73E8' : '#5F6368'} strokeWidth={2.2} />
           <Text style={[styles.simBtnText, activeSimMode === 'slow_2g' && styles.simBtnTextActive]}>
-            ⏳ Slow 2G Network (3.5s Artificial Latency)
+            Slow 2G Network (3.5s Artificial Latency)
           </Text>
         </TouchableOpacity>
 
@@ -156,8 +159,9 @@ export const DevSettingsScreen: React.FC = () => {
           onPress={() => handleSetSimMode('error_500')}
           disabled={isUpdating}
         >
+          <AlertTriangleIcon size={16} color={activeSimMode === 'error_500' ? '#D93025' : '#5F6368'} strokeWidth={2.2} />
           <Text style={[styles.simBtnText, activeSimMode === 'error_500' && styles.simBtnTextActive]}>
-            ⚠️ HTTP 500 Internal Error (Test auto-retry)
+            HTTP 500 Internal Error (Test auto-retry)
           </Text>
         </TouchableOpacity>
 
@@ -166,8 +170,9 @@ export const DevSettingsScreen: React.FC = () => {
           onPress={() => handleSetSimMode('drop_connection')}
           disabled={isUpdating}
         >
+          <UnplugIcon size={16} color={activeSimMode === 'drop_connection' ? '#D93025' : '#5F6368'} strokeWidth={2.2} />
           <Text style={[styles.simBtnText, activeSimMode === 'drop_connection' && styles.simBtnTextActive]}>
-            🔌 Drop Connection Mid-Upload (Socket Destroy)
+            Drop Connection Mid-Upload (Socket Destroy)
           </Text>
         </TouchableOpacity>
       </View>
@@ -264,6 +269,9 @@ const styles = StyleSheet.create({
     lineHeight: 18,
   },
   simBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 9,
     borderWidth: 1,
     borderColor: '#DADCE0',
     borderRadius: 8,
@@ -321,3 +329,4 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
 });
+
