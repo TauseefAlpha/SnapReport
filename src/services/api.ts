@@ -10,9 +10,9 @@ import { Platform } from 'react-native';
 import { Report, ServerReport } from '../types/report';
 
 // Default backend host:
-// Android Emulator ke liye: 10.0.2.2 (jo host computer ko point karta hai)
-// iOS Simulator / local machine ke liye: localhost
-const DEFAULT_HOST = Platform.OS === 'android' ? 'http://10.0.2.2:3000' : 'http://localhost:3000';
+// Port 3000 reverse proxy (adb reverse tcp:3000 tcp:3000) works seamlessly
+// across Android emulator, physical USB devices, and iOS simulators.
+const DEFAULT_HOST = 'http://localhost:3000';
 
 class ApiService {
   private baseUrl: string = DEFAULT_HOST;
@@ -80,7 +80,7 @@ class ApiService {
       clearTimeout(timeoutId);
       const isAbort = err.name === 'AbortError';
       const errorMsg = isAbort ? 'Upload timed out on slow connection' : err.message || 'Network request failed';
-      console.error(`[API] Network error: ${errorMsg}`);
+      console.warn(`[API] Network error: ${errorMsg}`);
       return { success: false, error: errorMsg };
     }
   }

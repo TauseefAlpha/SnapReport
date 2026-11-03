@@ -101,7 +101,10 @@ export const ComposeScreen: React.FC<Props> = ({ onReportSubmitted }) => {
    */
   const handleTakePhoto = async () => {
     if (selectedImages.length >= 5) {
-      Alert.alert('Limit Reached', 'You can attach a maximum of 5 photos per report.');
+      Alert.alert(
+        'Maximum 5 Photos Reached',
+        'You have already attached the maximum allowed 5 inspection photos. To replace a photo, tap the (✕) button on any image first.'
+      );
       return;
     }
 
@@ -149,7 +152,10 @@ export const ComposeScreen: React.FC<Props> = ({ onReportSubmitted }) => {
   const handlePickFromGallery = async () => {
     const remainingSlots = 5 - selectedImages.length;
     if (remainingSlots <= 0) {
-      Alert.alert('Limit Reached', 'You can attach a maximum of 5 photos per report.');
+      Alert.alert(
+        'Maximum 5 Photos Reached',
+        'You have already attached the maximum allowed 5 inspection photos. To replace a photo, tap the (✕) button on any image first.'
+      );
       return;
     }
 
@@ -287,21 +293,41 @@ export const ComposeScreen: React.FC<Props> = ({ onReportSubmitted }) => {
           {/* Action Buttons: Camera & Gallery */}
           <View style={styles.buttonRow}>
             <TouchableOpacity
-              style={[styles.actionBtn, selectedImages.length >= 5 && styles.actionBtnDisabled]}
+              style={[styles.actionBtn, selectedImages.length >= 5 && styles.actionBtnFull]}
               onPress={handleTakePhoto}
-              disabled={selectedImages.length >= 5}
             >
-              <CameraIcon size={18} color="#1A73E8" strokeWidth={2} />
-              <Text style={styles.actionBtnText}>Take Photo</Text>
+              <CameraIcon
+                size={18}
+                color={selectedImages.length >= 5 ? '#5F6368' : '#1A73E8'}
+                strokeWidth={2}
+              />
+              <Text
+                style={[
+                  styles.actionBtnText,
+                  selectedImages.length >= 5 && styles.actionBtnTextFull,
+                ]}
+              >
+                Take Photo
+              </Text>
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={[styles.actionBtn, selectedImages.length >= 5 && styles.actionBtnDisabled]}
+              style={[styles.actionBtn, selectedImages.length >= 5 && styles.actionBtnFull]}
               onPress={handlePickFromGallery}
-              disabled={selectedImages.length >= 5}
             >
-              <ImageIcon size={18} color="#1A73E8" strokeWidth={2} />
-              <Text style={styles.actionBtnText}>Choose Gallery</Text>
+              <ImageIcon
+                size={18}
+                color={selectedImages.length >= 5 ? '#5F6368' : '#1A73E8'}
+                strokeWidth={2}
+              />
+              <Text
+                style={[
+                  styles.actionBtnText,
+                  selectedImages.length >= 5 && styles.actionBtnTextFull,
+                ]}
+              >
+                Choose Gallery
+              </Text>
             </TouchableOpacity>
           </View>
 
@@ -421,10 +447,17 @@ const styles = StyleSheet.create({
     borderColor: '#DADCE0',
     opacity: 0.5,
   },
+  actionBtnFull: {
+    borderColor: '#DADCE0',
+    backgroundColor: '#F8F9FA',
+  },
   actionBtnText: {
     color: '#1A73E8',
     fontSize: 13.5,
     fontWeight: '600',
+  },
+  actionBtnTextFull: {
+    color: '#5F6368',
   },
   emptyPhotoBox: {
     borderWidth: 1.5,

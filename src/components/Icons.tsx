@@ -173,3 +173,4 @@ export const CheckIcon: React.FC<IconProps> = ({
     <Polyline points="20 6 9 17 4 12" />
   </Svg>
 );
+
