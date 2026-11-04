@@ -1,12 +1,3 @@
-/**
- * Queue / Outbox Screen
- * 
- * Maqsad:
- * Inspector ko "Ek Nazar Me" (One glance, one answer) batana ke uski
- * reports kahan hain: Safe hain, chal rahi hain, ya server par delivered ho chuki hain.
- * "Saved locally" aur "Delivered to server" bilkul alag nazar aate hain.
- */
-
 import React, { useEffect, useState } from 'react';
 import {
   ActivityIndicator,
@@ -28,7 +19,6 @@ export const QueueScreen: React.FC = () => {
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   useEffect(() => {
-    // QueueManager se subscribe karein taake har status update par list khud refresh ho
     const unsubscribe = queueManager.subscribe((latestReports) => {
       setReports(latestReports);
     });

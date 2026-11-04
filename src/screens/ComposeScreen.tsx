@@ -1,13 +1,3 @@
-/**
- * Compose Screen
- * 
- * Maqsad:
- * Field inspector yahan se nayi report banata hai:
- * 1. Short description likhta hai (Required).
- * 2. Camera ya Gallery se 1 se 5 photos select karta hai (Strict validation: 1-5).
- * 3. Enqueue karta hai jo offline-first local disk par save hoti hai.
- */
-
 import React, { useState } from 'react';
 import {
   Alert,
@@ -96,9 +86,7 @@ export const ComposeScreen: React.FC<Props> = ({ onReportSubmitted }) => {
     }
   };
 
-  /**
-   * Camera se photo lena
-   */
+  // Open camera
   const handleTakePhoto = async () => {
     if (selectedImages.length >= 5) {
       Alert.alert(
@@ -146,9 +134,7 @@ export const ComposeScreen: React.FC<Props> = ({ onReportSubmitted }) => {
     }
   };
 
-  /**
-   * Gallery se photo choose karna
-   */
+  // Open gallery
   const handlePickFromGallery = async () => {
     const remainingSlots = 5 - selectedImages.length;
     if (remainingSlots <= 0) {
@@ -161,7 +147,7 @@ export const ComposeScreen: React.FC<Props> = ({ onReportSubmitted }) => {
 
     const options: ImageLibraryOptions = {
       mediaType: 'photo',
-      selectionLimit: remainingSlots, // Sirf baqi slots tak select karne de
+      selectionLimit: remainingSlots,
       quality: 1,
     };
 
@@ -193,20 +179,13 @@ export const ComposeScreen: React.FC<Props> = ({ onReportSubmitted }) => {
     }
   };
 
-  /**
-   * Photo list se kisi photo ko hatana
-   */
   const handleRemovePhoto = (id: string) => {
     setSelectedImages((prev) => prev.filter((img) => img.id !== id));
   };
 
-  /**
-   * Submit to Queue
-   */
   const handleSubmit = async () => {
     const trimmedDesc = description.trim();
 
-    // STRICT VALIDATIONS (Assignment requirements)
     if (!trimmedDesc) {
       Alert.alert('Description Required', 'Please enter a short description for the report.');
       return;
@@ -225,20 +204,17 @@ export const ComposeScreen: React.FC<Props> = ({ onReportSubmitted }) => {
     setIsSubmitting(true);
 
     try {
-      // Nayi report create karein
       const newReport: Report = {
-        id: generateUUID(), // Idempotency key
+        id: generateUUID(),
         description: trimmedDesc,
         images: selectedImages,
         createdAt: new Date().toISOString(),
-        status: 'QUEUED', // Shuru me QUEUED hoti hai
+        status: 'QUEUED',
         retryCount: 0,
       };
 
-      // Queue me enqueue karein (yeh foran local disk par save hoti hai)
       await queueManager.enqueue(newReport);
 
-      // Form reset karein
       setDescription('');
       setSelectedImages([]);
 

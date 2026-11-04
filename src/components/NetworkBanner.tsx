@@ -1,12 +1,3 @@
-/**
- * Network Status Banner
- * 
- * Maqsad:
- * User ko foran batana ke internet mojood hai ya phone offline hai.
- * Assignment rule: "One glance, one answer. The user can always tell whether
- * their work is safe, moving, or lost."
- */
-
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { networkService } from '../services/network';

@@ -1,13 +1,3 @@
-/**
- * Server Review Screen
- * 
- * Maqsad:
- * Assignment ka 3rd pillar: "Show what the SERVER holds — fetched from it,
- * NOT read back out of local state."
- * 
- * Yeh screen direct GET /api/reports se data mangwati hai.
- */
-
 import React, { useCallback, useEffect, useState } from 'react';
 import {
   ActivityIndicator,

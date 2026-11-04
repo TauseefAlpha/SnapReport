@@ -1,13 +1,3 @@
-/**
- * Dev / Reset & Simulation Screen
- * 
- * Maqsad:
- * 1. "Start over: A deliberate reset. You decide how far the blast radius goes, and say so."
- * 2. "Make it fail on demand: Latency, dropped connections, 500 error."
- * 
- * Yeh screen evaluator ke liye testing aur evaluation ko 10x asaan bana deti hai.
- */
-
 import React, { useEffect, useState } from 'react';
 import {
   Alert,
@@ -30,7 +20,6 @@ export const DevSettingsScreen: React.FC = () => {
   const [activeSimMode, setActiveSimMode] = useState<SimMode>(cachedSimMode);
   const [isUpdating, setIsUpdating] = useState(false);
 
-  // Screen open hone par server se live simulation status fetch karein
   useEffect(() => {
     apiService
       .getSimulation()
@@ -41,13 +30,10 @@ export const DevSettingsScreen: React.FC = () => {
         }
       })
       .catch((err) => {
-        console.warn('[DEV] Could not fetch live simulation status:', err.message);
+        console.warn('[DEV] Failed to sync simulation status:', err.message);
       });
   }, []);
 
-  /**
-   * Server simulation mode update karna
-   */
   const handleSetSimMode = async (mode: SimMode) => {
     setIsUpdating(true);
     try {

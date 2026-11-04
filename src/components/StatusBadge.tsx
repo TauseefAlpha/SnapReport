@@ -1,11 +1,3 @@
-/**
- * Status Badge Component
- * 
- * Maqsad:
- * Report ki har state ko clear, color-coded aur honest tarike se dikhana.
- * Assignment rule: "Never lie. 'Saved' and 'uploaded' are different facts."
- */
-
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { ReportStatus } from '../types/report';

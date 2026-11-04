@@ -1,16 +1,3 @@
-/**
- * SnapReport — Main Application Root
- * 
- * Features:
- * 1. Initializes the QueueManager background listener on app launch.
- * 2. Displays live network status banner (Offline / Online).
- * 3. Native tab navigation with Lucide Vector Icons & safe area insets:
- *    - Compose: Create reports with 1-5 images & description
- *    - Outbox: Real-time local queue feed & delivery status
- *    - Server Review: Reports fetched directly from backend
- *    - Dev / Reset: Failure simulator & deliberate reset operations
- */
-
 import React, { useEffect, useState } from 'react';
 import {
   StatusBar,
@@ -37,10 +24,8 @@ function MainApp() {
   const [pendingCount, setPendingCount] = useState<number>(0);
 
   useEffect(() => {
-    // App start hone par Queue Engine start karein (Unattended background runner)
     queueManager.init();
 
-    // Outbox tab par badge show karne ke liye pending reports track karein
     const unsubscribe = queueManager.subscribe((reports: Report[]) => {
       const pending = reports.filter(
         (r) => r.status === 'QUEUED' || r.status === 'PROCESSING_IMAGES' || r.status === 'UPLOADING'
