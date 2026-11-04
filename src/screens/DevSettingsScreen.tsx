@@ -8,7 +8,7 @@
  * Yeh screen evaluator ke liye testing aur evaluation ko 10x asaan bana deti hai.
  */
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Alert,
   ScrollView,
@@ -22,18 +22,37 @@ import { AlertTriangleIcon, CheckIcon, ClockIcon, UnplugIcon } from '../componen
 import { apiService } from '../services/api';
 import { clearAllLocalReports } from '../services/storage';
 
+type SimMode = 'none' | 'slow_2g' | 'error_500' | 'drop_connection';
+let cachedSimMode: SimMode = 'none';
+
 export const DevSettingsScreen: React.FC = () => {
   const [serverUrl, setServerUrl] = useState(apiService.getBaseUrl());
-  const [activeSimMode, setActiveSimMode] = useState<'none' | 'slow_2g' | 'error_500' | 'drop_connection'>('none');
+  const [activeSimMode, setActiveSimMode] = useState<SimMode>(cachedSimMode);
   const [isUpdating, setIsUpdating] = useState(false);
+
+  // Screen open hone par server se live simulation status fetch karein
+  useEffect(() => {
+    apiService
+      .getSimulation()
+      .then((cfg) => {
+        if (cfg && cfg.mode) {
+          cachedSimMode = cfg.mode;
+          setActiveSimMode(cfg.mode);
+        }
+      })
+      .catch((err) => {
+        console.warn('[DEV] Could not fetch live simulation status:', err.message);
+      });
+  }, []);
 
   /**
    * Server simulation mode update karna
    */
-  const handleSetSimMode = async (mode: 'none' | 'slow_2g' | 'error_500' | 'drop_connection') => {
+  const handleSetSimMode = async (mode: SimMode) => {
     setIsUpdating(true);
     try {
       await apiService.updateSimulation(mode);
+      cachedSimMode = mode;
       setActiveSimMode(mode);
       Alert.alert('Simulation Updated', `Backend failure mode is now set to: ${mode}`);
     } catch (err: any) {

@@ -59,6 +59,14 @@ npm start
 npm run android
 ```
 
+> [!TIP]
+> **Connecting Android Emulator to Host Backend:**
+> In Android emulators, `localhost` refers to the emulator device itself, not your host computer.
+> - **Option 1 (Recommended):** In the app, go to the **Reset / Dev** tab, change the **Backend Server URL** input from `http://localhost:3000` to:
+>   👉 `http://10.0.2.2:3000`  
+>   and tap **"Save Server URL"**.
+> - **Option 2:** Or run `adb reverse tcp:3000 tcp:3000` in your terminal to route `localhost:3000` through to your host machine.
+
 #### iOS (Optional)
 ```bash
 bundle exec pod install --project-directory=ios
@@ -77,6 +85,8 @@ Navigate to the **Reset / Dev** tab in the app. Tap any of the simulation button
 - **Slow 2G Network:** Adds artificial 3,500ms delay to uploads to simulate 2G latency.
 - **HTTP 500 Internal Error:** Server immediately responds with `500 Server Error` (tests exponential backoff & auto-retry).
 - **Drop Connection Mid-Upload:** Server calls `req.socket.destroy()` mid-transmission, immediately tearing down the connection (tests network drop handling).
+
+*(Note: On Android Emulator, ensure the **Backend Server URL** at the bottom of the Dev screen is set to `http://10.0.2.2:3000` or run `adb reverse tcp:3000 tcp:3000`).*
 
 ### Option B: Via Terminal (`curl`)
 You can trigger simulation modes from any terminal:

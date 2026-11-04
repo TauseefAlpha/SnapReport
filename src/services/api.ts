@@ -114,6 +114,18 @@ class ApiService {
   /**
    * 4. Failure Simulation config control karna
    */
+  public async getSimulation(): Promise<{ mode: 'none' | 'slow_2g' | 'error_500' | 'drop_connection'; delayMs?: number }> {
+    const endpoint = `${this.baseUrl}/api/simulation`;
+    const response = await fetch(endpoint, {
+      method: 'GET',
+      headers: { Accept: 'application/json' },
+    });
+    if (!response.ok) {
+      throw new Error(`Failed to fetch simulation status: HTTP ${response.status}`);
+    }
+    return response.json();
+  }
+
   public async updateSimulation(mode: 'none' | 'slow_2g' | 'error_500' | 'drop_connection', delayMs = 3500) {
     const endpoint = `${this.baseUrl}/api/simulation`;
     const response = await fetch(endpoint, {
